@@ -15,14 +15,13 @@
   </template>
   
   <script setup>
-  defineProps(['meal'])
+  defineProps(['meal']) // Receiving the meal object as a prop
   const emit = defineEmits(['addToPlan'])
   
-  const addToPlan = () => {
-    emit('addToPlan', meal)
+  const addMealToPlan = () => {
+    emit('addToPlan', meal) // Emit the meal object to the parent
   }
   </script>
-  
   <style scoped>
   .meal-card {
     background-color: #f8f9fa;

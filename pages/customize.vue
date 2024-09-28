@@ -1,5 +1,8 @@
 <template>
+
     <div>
+      
+  <Navbar />
       <h1>Customize Your Meal Plan</h1>
       <div v-for="meal in meals" :key="meal.id">
         <label>
@@ -14,6 +17,7 @@
   
   <script setup>
   import { ref, computed } from 'vue'
+  import Navbar from '~/components/Navbar.vue'
   
   const meals = [
     { id: 1, name: 'Grilled Chicken', price: 12.99 },

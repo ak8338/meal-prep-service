@@ -1,47 +1,30 @@
 <template>
     <div>
       <!-- Responsive Navbar -->
-      <header>
-        <nav class="navbar">
-          <div class="logo">
-            <h1>Meal Prep Service</h1>
-          </div>
-          <button class="hamburger" @click="toggleMenu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
-          <ul :class="{ 'nav-links': true, 'active': menuActive }">
-            <li><NuxtLink to="/">Home</NuxtLink></li>
-            <li><NuxtLink to="/about">About Us</NuxtLink></li>
-            <li><NuxtLink to="/customize">Meal Plans</NuxtLink></li>
-          </ul>
-          <div class="nav-buttons">
-            <button @click="login">Login</button>
-            <button @click="goToCart">My Cart</button>
-          </div>
-        </nav>
-      </header>
+      <Navbar />
   
       <!-- Featured Meals Section -->
-      <section class="featured-meals">
-        <h2 class="page-title">Featured Meals</h2>
-        <div class="meal-list">
-          <MealCard
-            v-for="meal in featuredMeals"
-            :key="meal.id"
-            :meal="meal"
-            @addToPlan="addToPlan"
-          />
-        </div>
-      </section>
+      <div class="featured-meals-container">
+        <section class="featured-meals">
+          <h2 class="page-title">Featured Meals</h2>
+          <div class="meal-list">
+            <MealCard v-for="meal in featuredMeals" :key="meal.id" :meal="meal" @addToPlan="addToPlan" />
+          </div>
+        </section>
+      </div>
   
       <!-- Modern Footer -->
       <footer class="footer">
         <ul>
-          <li><NuxtLink to="/">Home</NuxtLink></li>
-          <li><NuxtLink to="/about">About Us</NuxtLink></li>
-          <li><NuxtLink to="/customize">Meal Plans</NuxtLink></li>
+          <li>
+            <NuxtLink to="/">Home</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/about">About Us</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/customize">Meal Plans</NuxtLink>
+          </li>
         </ul>
         <p>&copy; 2024 Meal Prep Service. All rights reserved.</p>
       </footer>
@@ -51,6 +34,7 @@
   <script setup>
   import { ref } from 'vue'
   import MealCard from '~/components/MealCard.vue'
+  import Navbar from '~/components/Navbar.vue'
   
   // Updated featured meal data with image URLs, calories, and other details
   const featuredMeals = [
@@ -62,30 +46,18 @@
     { id: 6, name: 'Rice Bowl', description: 'Quinoa, avocado, and chickpeas.', calories: 300, price: 10.99, image: '/images/rice-bowl.jpg' },
   ]
   
-  const cart = ref([])
-  const menuActive = ref(false)
-  
-  const toggleMenu = () => {
-    menuActive.value = !menuActive.value
-  }
-  
   const addToPlan = (meal) => {
-    cart.value.push(meal)
-    alert(`${meal.name} has been added to your cart!`)
-  }
-  
-  const login = () => {
-    // Logic for login (can be a redirect to a login page)
-  }
-  
-  const goToCart = () => {
-    // Logic to navigate to the cart page
+    // Use Vuex store to commit the mutation
+    $nuxt.$store.commit('ADD_TO_PLAN', meal)
+    alert(`${meal.name} has been added to your meal plan!`)
   }
   </script>
   
-  <style scoped>
-  /* Navbar styles */
-  .navbar {
+  
+
+<style scoped>
+/* Navbar styles */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -93,169 +65,227 @@
     padding: 1rem;
     color: white;
     position: relative;
-  }
-  
-  .logo h1 {
+}
+
+.logo h1 {
     font-size: 24px;
-  }
-  
-  .hamburger {
+}
+
+.hamburger {
     display: none;
     flex-direction: column;
     gap: 5px;
     background: none;
     border: none;
     cursor: pointer;
-  }
-  
-  .hamburger .bar {
+}
+
+.hamburger .bar {
     width: 25px;
     height: 3px;
     background-color: white;
-  }
+}
 
-  .page-title {
+.page-title {
     text-align: left;
     font-size: 25pt;
+    margin-left:130px;
+}
 
-  }
-  
-  .nav-links {
+.nav-links {
     list-style: none;
     display: flex;
     gap: 1rem;
-  }
-  
-  .nav-links li {
+}
+
+.nav-links li {
     font-size: 18px;
-  }
-  
-  .nav-links a {
+}
+
+.nav-links a {
     color: white;
     text-decoration: none;
-  }
-  
-  .nav-buttons {
+}
+
+.nav-buttons {
     display: flex;
     gap: 1rem;
-  }
-  
-  .nav-buttons button {
+}
+
+.nav-buttons button {
     background-color: #4CAF50;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 16px;
-  }
-  
-  .nav-buttons button:hover {
+}
+
+.nav-buttons button:hover {
     background-color: #45a049;
-  }
-  
-  /* Featured Meals Section */
-  .featured-meals {
+}
+
+/* Featured Meals Section */
+.featured-meals {
     text-align: center;
     padding: 2rem;
-  }
-  
-  .meal-list {
+}
+
+.meal-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
-    gap: 15px; /* Reduce gap between columns to bring them closer together */
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columns on desktop */
+    gap: 15px;
+    /* Reduce gap between columns to bring them closer together */
     justify-items: center;
-  }
-  
-  .meal-list .meal-card {
+}
+
+.meal-list .meal-card {
     background-color: #f8f9fa;
     border-radius: 10px;
     padding: 1rem;
-    width: 100%; /* Full width of the column */
-    max-width: 400px; /* Increase max-width of the meal card */
+    width: 100%;
+    /* Full width of the column */
+    max-width: 400px;
+    /* Increase max-width of the meal card */
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .meal-list img {
-    width: 100%; /* Make sure the image takes up full width */
+}
+
+.meal-list img {
+    width: 100%;
+    /* Make sure the image takes up full width */
     height: 200px;
     object-fit: cover;
     border-radius: 10px;
-  }
-  
-  /* Footer styles */
-  .footer {
+}
+
+/* Footer styles */
+.footer {
     background-color: #333;
     color: white;
     text-align: center;
     padding: 1rem;
     margin-top: 2rem;
-  }
-  
-  .footer ul {
+}
+
+.footer ul {
     list-style: none;
     display: flex;
     justify-content: center;
     gap: 1rem;
-  }
-  
-  .footer a {
+}
+
+.footer a {
     color: white;
     text-decoration: none;
-  }
-  
-  .footer p {
+}
+
+.footer p {
     margin-top: 1rem;
-  }
-  
-  /* Responsive Navbar */
-  @media (max-width: 768px) {
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
     .nav-links {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: #333;
-      flex-direction: column;
-      align-items: center;
-      display: none;
-      gap: 1rem;
-      padding: 1rem 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        flex-direction: column;
+        align-items: center;
+        display: none;
+        gap: 1rem;
+        padding: 1rem 0;
     }
-  
+
     .nav-links.active {
-      display: flex;
+        display: flex;
     }
-  
+
     .hamburger {
-      display: flex;
+        display: flex;
     }
-  
+
     .nav-buttons {
-      display: none;
+        display: none;
     }
-  }
-  
-  /* Responsive Meal Cards */
-  @media (max-width: 1024px) {
+}
+
+/* Responsive Meal Cards */
+@media (max-width: 1024px) {
     .meal-list {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on tablets */
     }
-  
+
     .meal-list .meal-card {
-      max-width: 450px; /* Slightly increase the max-width on tablets */
+        max-width: 450px;
+        /* Slightly increase the max-width on tablets */
     }
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .meal-list {
-      grid-template-columns: 1fr; /* 1 column on mobile */
+        grid-template-columns: 1fr;
+        /* 1 column on mobile */
     }
-  
+
     .meal-list .meal-card {
-      max-width: 100%; /* Full width on mobile */
+        max-width: 100%;
+        /* Full width on mobile */
     }
-  }
-  </style>
-  
-  
+}
+
+.featured-meals-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.featured-meals-title {
+    text-align: left;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.meal-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columns for larger screens */
+    gap: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .meal-list {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns for tablet screens */
+    }
+
+    .featured-meals-container {
+        padding-left: 0.5rem;
+        /* Reduce padding for tablets */
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .meal-list {
+        grid-template-columns: 1fr;
+        /* 1 column for mobile screens */
+    }
+
+    .featured-meals-container {
+        padding-left: 0.5rem;
+        /* Further reduce padding for mobile */
+        padding-right: 0.5rem;
+    }
+
+    .featured-meals-title {
+        font-size: 1.5rem;
+        /* Adjust title size on smaller screens */
+        margin-bottom: 0.5rem;
+    }
+}
+</style>

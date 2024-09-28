@@ -1,5 +1,6 @@
 <template>
     <div>
+<Navbar />
       <h1>Checkout</h1>
       <h2>Selected Meals</h2>
       <div v-for="meal in selectedMeals" :key="meal.id">
@@ -12,6 +13,7 @@
   
   <script setup>
   import { ref } from 'vue'
+  import Navbar from '~/components/Navbar.vue'
   
   const selectedMeals = ref([
     { id: 1, name: 'Grilled Chicken', price: 12.99 },
