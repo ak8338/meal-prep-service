@@ -1,0 +1,12 @@
+/* assets/css/global.css */
+* {
+    font-family: 'Poppins', sans-serif;
+  }
+  h1, h2, h3 {
+    font-weight: 700;
+  }
+  
+  p {
+    font-weight: 400;
+  }
+    
