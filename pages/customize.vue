@@ -5,7 +5,9 @@
       <h1 class="customize-title">Customize Your Meal Plan</h1>
 
       <h2 class="section-title">Available Meals</h2>
-      <div class="meals-container">
+
+      <!-- Check if meals are available -->
+      <div v-if="meals.length > 0" class="meals-container">
         <div class="meal-card" v-for="meal in meals" :key="meal.id">
           <img :src="meal.image" :alt="meal.name" class="meal-image"/>
           <h3 class="meal-card-title">{{ meal.name }}</h3>
@@ -20,12 +22,34 @@
         </div>
       </div>
 
+      <!-- Message if no meals are selected -->
+      <div v-if="selectedMeals.length === 0" class="no-meals-message">
+        <p>Meal Plan is Empty</p>
+      </div>
+
+      <!-- Total and Checkout button always visible -->
       <div class="total-section">
         <h2>Total: <span>{{ total | currency }}</span></h2>
       </div>
-      
+
       <nuxt-link to="/checkout" class="checkout-link">Go to Checkout</nuxt-link>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <ul>
+        <li>
+          <NuxtLink to="/">Home</NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/about">About Us</NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/customize">Meal Plans</NuxtLink>
+        </li>
+      </ul>
+      <p>&copy; 2024 WholesomeEats. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
@@ -33,15 +57,13 @@
 import { ref, computed } from 'vue'
 import Navbar from '~/components/Navbar.vue'
 
-const meals = [
-  // Add your meals data here
-]
+const meals = ref([]) // Simulating no meals for now
 
 const selectedMeals = ref([])
 
 const total = computed(() =>
   selectedMeals.value.reduce((sum, mealId) => {
-    const meal = meals.find((m) => m.id === mealId)
+    const meal = meals.value.find((m) => m.id === mealId)
     return sum + (meal ? meal.price : 0)
   }, 0)
 )
@@ -51,7 +73,6 @@ const total = computed(() =>
 /* Base Styles */
 .customize-page {
   font-family: 'Roboto', sans-serif;
-  padding: 20px;
   background-color: #f9f9f9;
   color: #333;
 }
@@ -124,6 +145,16 @@ const total = computed(() =>
   }
 }
 
+/* No Meals Message */
+.no-meals-message {
+  text-align: center;
+  padding: 30px;
+  font-size: 1.2rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  color: #6b6b6b;
+}
+
 /* Image */
 .meal-image {
   width: 100%;
@@ -182,6 +213,33 @@ const total = computed(() =>
 .checkout-link:hover {
   background-color: #45a049;
   transform: scale(1.05);
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.footer ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-left: 0;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Responsive Styles */

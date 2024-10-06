@@ -152,8 +152,9 @@
   .meal-list {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      gap: 0px;
       justify-items: center;
+      margin: 0px;
   }
   
   /* Add animation for meal cards */
@@ -320,6 +321,7 @@
           font-size: 1.5rem;
           margin-bottom: 0.5rem;
       }
+
   }
   </style>
   
