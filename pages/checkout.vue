@@ -40,26 +40,15 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-      <ul>
-        <li>
-          <NuxtLink to="/">Home</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/about">About Us</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/customize">Meal Plans</NuxtLink>
-        </li>
-      </ul>
-      <p>&copy; 2024 WholesomeEats. All rights reserved.</p>
-    </footer>
+    <Footer />
+     
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import Navbar from '~/components/Navbar.vue'
+import { ref, computed } from 'vue';
+import Navbar from '~/components/Navbar.vue';
+import Footer from '~/components/Footer.vue';
 
 const selectedMeals = ref([]) // Add selected meals data if available
 

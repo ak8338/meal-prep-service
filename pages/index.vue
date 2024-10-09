@@ -20,20 +20,7 @@
       </div>
   
       <!-- Modern Footer -->
-      <footer class="footer">
-        <ul>
-          <li>
-            <NuxtLink to="/">Home</NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/about">About Us</NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/customize">Meal Plans</NuxtLink>
-          </li>
-        </ul>
-        <p>&copy; 2024 WholesomeEats. All rights reserved.</p>
-      </footer>
+        <Footer />
     </div>
   </template>
   
@@ -41,6 +28,7 @@
   import { ref } from 'vue'
   import MealCard from '~/components/MealCard.vue'
   import Navbar from '~/components/Navbar.vue'
+  import Footer from '~/components/Footer.vue';
   
   // Updated featured meal data with image URLs, calories, and other details
   const featuredMeals = [
@@ -92,9 +80,8 @@
   }
   
   .page-title {
-      text-align: left;
+      text-align: center;
       font-size: 25pt;
-      margin-left:130px;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 0.5s forwards ease-in-out; /* Title animation */

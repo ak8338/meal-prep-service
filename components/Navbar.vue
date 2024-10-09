@@ -18,7 +18,9 @@
         </ul>
       </div>
       <div class="nav-buttons">
-        <button @click="login">Login</button>
+        <NuxtLink to='/login'>
+        <button>  Login</button>
+        </NuxtLink>
         <NuxtLink to="/checkout">
           <button>My Cart</button>
         </NuxtLink>

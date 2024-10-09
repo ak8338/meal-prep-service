@@ -42,9 +42,7 @@
       </section>
   
       <!-- Footer -->
-      <footer class="footer">
-        <p>&copy; 2024 WholesomeEats. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   </template>
   
