@@ -1,11 +1,14 @@
 <template>
   <div class="checkout-page">
     <Navbar />
+
     <div class="checkout-container">
       <h1 class="checkout-title">Checkout</h1>
 
       <h2 class="section-title">Selected Meals</h2>
-      <div class="meals-container">
+
+      <!-- Check if the cart is empty -->
+      <div v-if="selectedMeals.length > 0" class="meals-container">
         <div class="meal-card" v-for="meal in selectedMeals" :key="meal.id">
           <img :src="meal.image" :alt="meal.name" class="meal-image"/>
           <h3 class="meal-card-title">{{ meal.name }}</h3>
@@ -18,27 +21,52 @@
         </div>
       </div>
 
+      <!-- Show message if the cart is empty -->
+      <div v-if="selectedMeals.length === 0" class="empty-cart-message">
+        <p>Your cart is empty.</p>
+      </div>
+
+      <!-- Total section and Place Order button are always visible -->
       <div class="total-section">
         <h2>Total: <span>{{ total | currency }}</span></h2>
       </div>
 
       <button class="place-order-button" @click="placeOrder">Place Order</button>
     </div>
+
+    <!-- Notification Banner at the bottom -->
+    <div class="notification-banner" v-if="showNotification">
+      <p>Order placed successfully!</p>
+    </div>
+
+    <!-- Footer -->
+    <Footer />
+     
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import Navbar from '~/components/Navbar.vue'
+import { ref, computed } from 'vue';
+import Navbar from '~/components/Navbar.vue';
+import Footer from '~/components/Footer.vue';
 
-const selectedMeals = ref([
-  // Add meals data
-])
+definePageMeta({
+  middleware: 'auth'
+});
+
+const selectedMeals = ref([]) // Add selected meals data if available
 
 const total = computed(() => selectedMeals.value.reduce((sum, meal) => sum + meal.price, 0))
 
+const showNotification = ref(false)
+
 const placeOrder = () => {
-  alert('Order placed successfully!')
+  showNotification.value = true;
+
+  // Automatically hide the notification after 3 seconds
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 3000)
 }
 </script>
 
@@ -46,9 +74,9 @@ const placeOrder = () => {
 /* Base Styles */
 .checkout-page {
   font-family: 'Roboto', sans-serif;
-  padding: 20px;
   background-color: #f9f9f9;
   color: #333;
+  position: relative;
 }
 
 .checkout-container {
@@ -70,6 +98,66 @@ const placeOrder = () => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Notification Banner at the bottom of the page */
+.notification-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  z-index: 999;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Empty Cart Message */
+.empty-cart-message {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.footer ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-left: 0;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Titles */

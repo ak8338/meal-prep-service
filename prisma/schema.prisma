@@ -1,0 +1,52 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  mealPlans MealPlan[]
+  orders    Order[] 
+}
+
+model Meal {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  calories    Int
+  price       Float
+  imageUrl    String
+  mealPlans   MealPlanMeal[]
+}
+
+model MealPlan {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  meals     MealPlanMeal[]
+  orders    Order[]  
+}
+
+model MealPlanMeal {
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id])
+  mealPlanId Int
+  meal       Meal     @relation(fields: [mealId], references: [id])
+  mealId     Int
+
+  @@id([mealPlanId, mealId])
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  mealPlanId Int
+  userId    Int
+  mealPlan  MealPlan  @relation(fields: [mealPlanId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}

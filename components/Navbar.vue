@@ -18,7 +18,15 @@
         </ul>
       </div>
       <div class="nav-buttons">
-        <button @click="login">Login</button>
+        <!-- Show Login button if not logged in, else show Logout button -->
+        <template v-if="!isLoggedIn">
+          <NuxtLink to="/login">
+            <button>Login</button>
+          </NuxtLink>
+        </template>
+        <template v-else>
+          <button @click="logout">Logout</button>
+        </template>
         <NuxtLink to="/checkout">
           <button>My Cart</button>
         </NuxtLink>
@@ -33,17 +41,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const menuActive = ref(false)
+const menuActive = ref(false);
+const isLoggedIn = ref(false); // Track if the user is logged in
+const router = useRouter();
 
 const toggleMenu = () => {
-  menuActive.value = !menuActive.value
-}
+  menuActive.value = !menuActive.value;
+};
 
-const login = () => {
-  // Handle login logic here
-}
+// Logout function to remove the token and redirect
+const logout = () => {
+  localStorage.removeItem('token'); // Remove the token from localStorage
+  isLoggedIn.value = false; // Update the logged-in state
+  router.push('/login'); // Redirect to login page
+};
+
+// Check if the user is logged in by checking if the token exists
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  isLoggedIn.value = !!token; // Set isLoggedIn to true if the token exists
+});
 </script>
 
 <style scoped>
