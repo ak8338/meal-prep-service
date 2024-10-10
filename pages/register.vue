@@ -1,46 +1,51 @@
 <template>
-    <div class="page-container" >
-
-        <div class="register-container">
-          <h1>Register</h1>
-          <form @submit.prevent="register">
-            <div class="input-field">
-              <label for="username">Username</label>
-              <input type="text" id="username" v-model="username" required />
-            </div>
-            <div class="input-field">
-              <label for="email">Email</label>
-              <input type="email" id="email" v-model="email" required />
-            </div>
-            <div class="input-field">
-              <label for="password">Password</label>
-              <input type="password" id="password" v-model="password" required />
-            </div>
-            <button type="submit">Register</button>
-          </form>
+  <div class="page-container">
+    <div class="register-container">
+      <h1>Register</h1>
+      <form @submit.prevent="register">
+        <div class="input-field">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="username" required />
         </div>
+        <div class="input-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model="email" required />
+        </div>
+        <div class="input-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="password" required />
+        </div>
+        <button type="submit">Register</button>
+      </form>
+      <!-- Link to login page -->
+      <p class="login-link">
+        Already have an account? 
+        <a href="/login">Login here</a>
+      </p>
     </div>
+  </div>
 </template>
 <style scoped>
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
-h1{
-    margin-top: 0;
+h1 {
+  margin-top: 0;
 }
 .page-container {
   position: relative;
   height: 100vh;
-  background-image: url('/Users/annakozlova/Desktop/meal-prep-service/public/images/register-background1.jpg');
+  background-image: url("/Users/annakozlova/Desktop/meal-prep-service/public/images/register-background1.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .page-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -50,7 +55,6 @@ h1{
   pointer-events: none; /* This ensures that the overlay does not interfere with interactions */
 }
 .register-container {
-
   position: absolute;
   top: 40%;
   left: 50%;
@@ -58,16 +62,23 @@ h1{
   max-width: 400px;
   width: 100%; /* You can adjust this depending on your design */
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.8); /* Optional: Adds a white semi-transparent overlay */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Optional: Adds a white semi-transparent overlay */
 }
 
 .input-field {
   margin-bottom: 20px;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   width: 100%;
   height: 35px;
   display: block;
@@ -79,7 +90,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 button {
   width: 100%;
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
@@ -91,9 +102,12 @@ button:hover {
 }
 </style>
 
-
 <script>
 import axios from "axios";
+
+definePageMeta({
+  middleware: 'guest', // Apply guest middleware
+});
 
 export default {
   data() {
@@ -106,19 +120,19 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/users/registration/",
-          {
-            username: this.username,
-            email: this.email,
-            password: this.password,
-          }
-        );
+        const response = await axios.post("/api/register", {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        });
         console.log("Registration successful:", response.data);
-        // Redirect or update UI upon successful registration
+        // Redirect to login page after successful registration
         this.$router.push("/login");
       } catch (error) {
-        console.error("An error occurred:", error.response.data);
+        console.error(
+          "An error occurred:",
+          error.response?.data || error.message
+        );
       }
     },
   },

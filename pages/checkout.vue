@@ -50,6 +50,10 @@ import { ref, computed } from 'vue';
 import Navbar from '~/components/Navbar.vue';
 import Footer from '~/components/Footer.vue';
 
+definePageMeta({
+  middleware: 'auth'
+});
+
 const selectedMeals = ref([]) // Add selected meals data if available
 
 const total = computed(() => selectedMeals.value.reduce((sum, meal) => sum + meal.price, 0))

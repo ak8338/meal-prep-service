@@ -6,8 +6,8 @@
       <h1 class="login-title">Login</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" required />
+          <label for="email">E-mail</label>
+          <input type="text" id="email" v-model="email" required />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
@@ -15,6 +15,15 @@
         </div>
         <button type="submit" class="login-button">Login</button>
       </form>
+
+      <!-- Display error message if login fails -->
+      <p v-if="loginError" class="error-message">{{ loginError }}</p>
+
+      <!-- Link to register page -->
+      <p class="register-link">
+        Don't have an account? 
+        <a href="/register">Register here</a>
+      </p>
     </div>
 
     <Footer />
@@ -23,15 +32,40 @@
 
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from 'vue-router'; // Import useRouter for redirection
 import Navbar from "~/components/Navbar.vue";
 import Footer from "~/components/Footer.vue";
 
-const username = ref("");
-const password = ref("");
+definePageMeta({
+  middleware: 'guest', // Apply guest middleware
+});
 
-const loginUser = () => {
-  // Login logic here
-  console.log(`Login attempted for username: ${username.value}`);
+const email = ref("");
+const password = ref("");
+const loginError = ref(""); // To store the error message
+const router = useRouter(); // Use router for redirection
+
+const loginUser = async () => {
+  loginError.value = ""; // Clear any previous errors
+  try {
+    const response = await axios.post("/api/login", {
+      email: email.value,
+      password: password.value,
+    });
+
+    if (response.data.token) { // Only store the token if it's present
+      console.log("Login successful:", response.data);
+      localStorage.setItem("token", response.data.token); // Store the token in localStorage
+      router.push("/"); // Redirect after successful login
+    } else {
+      loginError.value = "Login failed. Please try again.";
+    }
+  } catch (error) {
+    // Handle error messages
+    loginError.value = error.response?.data?.error || "Login failed. Please try again."; 
+    console.error("Login failed:", error.response?.data || error.message);
+  }
 };
 </script>
 
@@ -79,6 +113,7 @@ const loginUser = () => {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 .login-button {
   background-color: #4caf50;
   color: white;
@@ -93,5 +128,11 @@ const loginUser = () => {
 .login-button:hover {
   background-color: #45a049;
   transform: scale(1.05);
+}
+
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 </style>

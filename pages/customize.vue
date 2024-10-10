@@ -45,6 +45,10 @@ import { ref, computed } from 'vue'
 import Navbar from '~/components/Navbar.vue'
 import Footer from '~/components/Footer.vue';
 
+definePageMeta({
+  middleware: 'auth'
+});
+
 const meals = ref([]) // Simulating no meals for now
 
 const selectedMeals = ref([])

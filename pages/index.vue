@@ -29,7 +29,9 @@
   import MealCard from '~/components/MealCard.vue'
   import Navbar from '~/components/Navbar.vue'
   import Footer from '~/components/Footer.vue';
-  
+  definePageMeta({
+    middleware: 'auth'
+    });
   // Updated featured meal data with image URLs, calories, and other details
   const featuredMeals = [
     { id: 1, name: 'Bean Salad Bowl', description: 'Served with vegetables and rice.', calories: 450, price: 12.99, image: '/images/bean-salad-bowl.jpg' },
