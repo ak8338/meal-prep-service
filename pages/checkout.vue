@@ -13,7 +13,7 @@
           <img :src="meal.image" :alt="meal.name" class="meal-image"/>
           <h3 class="meal-card-title">{{ meal.name }}</h3>
           <p class="meal-card-description">{{ meal.description }}</p>
-          
+
           <div class="meal-info">
             <div class="meal-pill">Calories: {{ meal.calories }}</div>
             <div class="meal-pill">Price: {{ meal.price | currency }}</div>
@@ -34,14 +34,10 @@
       <button class="place-order-button" @click="placeOrder">Place Order</button>
     </div>
 
-    <!-- Notification Banner at the bottom -->
-    <div class="notification-banner" v-if="showNotification">
-      <p>Order placed successfully!</p>
-    </div>
+    <!-- Reusable Notification Banner Component -->
+    <NotificationBanner :show="showNotification" message="Order placed successfully!" />
 
-    <!-- Footer -->
     <Footer />
-     
   </div>
 </template>
 
@@ -49,16 +45,17 @@
 import { ref, computed } from 'vue';
 import Navbar from '~/components/Navbar.vue';
 import Footer from '~/components/Footer.vue';
+import NotificationBanner from '~/components/NotificationBanner.vue'; // Import the reusable component
 
 definePageMeta({
   middleware: 'auth'
 });
 
-const selectedMeals = ref([]) // Add selected meals data if available
+const selectedMeals = ref([]); // Add selected meals data if available
 
-const total = computed(() => selectedMeals.value.reduce((sum, meal) => sum + meal.price, 0))
+const total = computed(() => selectedMeals.value.reduce((sum, meal) => sum + meal.price, 0));
 
-const showNotification = ref(false)
+const showNotification = ref(false);
 
 const placeOrder = () => {
   showNotification.value = true;
@@ -66,9 +63,14 @@ const placeOrder = () => {
   // Automatically hide the notification after 3 seconds
   setTimeout(() => {
     showNotification.value = false;
-  }, 3000)
-}
+  }, 3000);
+};
 </script>
+
+<style scoped>
+/* Your existing styles */
+</style>
+
 
 <style scoped>
 /* Base Styles */

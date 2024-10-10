@@ -4,62 +4,52 @@
     <div class="customize-container">
       <h1 class="customize-title">Customize Your Meal Plan</h1>
 
-      <h2 class="section-title">Available Meals</h2>
+      <h2 class="section-title">Your Meal Plan</h2>
 
-      <!-- Check if meals are available -->
-      <div v-if="meals.length > 0" class="meals-container">
-        <div class="meal-card" v-for="meal in meals" :key="meal.id">
-          <img :src="meal.image" :alt="meal.name" class="meal-image"/>
+      <div v-if="mealPlan.length > 0" class="meals-container">
+        <div class="meal-card" v-for="meal in mealPlan" :key="meal.id">
+          <img :src="meal.imageUrl" :alt="meal.name" class="meal-image" />
           <h3 class="meal-card-title">{{ meal.name }}</h3>
           <p class="meal-card-description">{{ meal.description }}</p>
-          
+
           <div class="meal-info">
             <div class="meal-pill">Calories: {{ meal.calories }}</div>
             <div class="meal-pill">Price: {{ meal.price | currency }}</div>
           </div>
-
-          <input type="checkbox" v-model="selectedMeals" :value="meal.id" class="meal-checkbox"/>
         </div>
       </div>
 
-      <!-- Message if no meals are selected -->
-      <div v-if="selectedMeals.length === 0" class="no-meals-message">
+      <div v-if="mealPlan.length === 0" class="no-meals-message">
         <p>Meal Plan is Empty</p>
       </div>
 
-      <!-- Total and Checkout button always visible -->
       <div class="total-section">
-        <h2>Total: <span>{{ total | currency }}</span></h2>
+        <h2>Total: $<span>{{ total | currency }}</span></h2>
       </div>
 
       <nuxt-link to="/checkout" class="checkout-link">Go to Checkout</nuxt-link>
     </div>
 
-    <!-- Footer -->
     <Footer />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import Navbar from '~/components/Navbar.vue'
+import { computed } from 'vue';
+import { useMealPlanStore } from '~/stores/mealPlan';
+import Navbar from '~/components/Navbar.vue';
 import Footer from '~/components/Footer.vue';
 
 definePageMeta({
   middleware: 'auth'
 });
 
-const meals = ref([]) // Simulating no meals for now
+const store = useMealPlanStore(); // Access the Pinia store
+const mealPlan = computed(() => store.mealPlan); // Access mealPlan from the store
 
-const selectedMeals = ref([])
-
-const total = computed(() =>
-  selectedMeals.value.reduce((sum, mealId) => {
-    const meal = meals.value.find((m) => m.id === mealId)
-    return sum + (meal ? meal.price : 0)
-  }, 0)
-)
+const total = computed(() => store.totalPrice); // Use the totalPrice getter from the store
 </script>
+
 
 <style scoped>
 /* Base Styles */
