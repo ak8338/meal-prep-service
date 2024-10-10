@@ -33,10 +33,6 @@
   import Footer from "~/components/Footer.vue"; // Import Footer
   import NotificationBanner from "~/components/NotificationBanner.vue"; // Import NotificationBanner
   
-  definePageMeta({
-    middleware: "auth", // Ensure the user is authenticated
-  });
-  
   const store = useMealPlanStore(); // Use Pinia store
   const featuredMeals = ref([]); // Store fetched meals
   const showNotification = ref(false); // Track notification visibility

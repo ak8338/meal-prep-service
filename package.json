@@ -15,11 +15,15 @@
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.4",
     "vue": "latest",
     "vue-router": "latest",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
     "prisma": "^5.20.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

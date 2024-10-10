@@ -2,30 +2,36 @@
   <header>
     <nav class="navbar">
       <div class="navbar-left">
-        <div class="logo">
-          <h1>WholesomeEats</h1>
-        </div>
-        <ul :class="{ 'nav-links': true, 'active': menuActive }">
+        <!-- Wrap the logo in a NuxtLink to make it clickable -->
+        <NuxtLink to="/" class="logo-link">
+          <div class="logo">
+            <h1>WholesomeEats</h1>
+          </div>
+        </NuxtLink>
+        <ul :class="{ 'nav-links': true, active: menuActive }">
           <li>
             <NuxtLink to="/">Home</NuxtLink>
           </li>
+
           <li>
             <NuxtLink to="/about">About Us</NuxtLink>
           </li>
-          <li>
-            <NuxtLink to="/customize">Meal Plans</NuxtLink>
-          </li>
+          <template v-if="isLoggedIn">
+            <li>
+              <NuxtLink to="/customize">My Meal Plan</NuxtLink>
+            </li>
+          </template>
         </ul>
       </div>
       <div class="nav-buttons">
-        <!-- Show Login button if not logged in, else show Logout button -->
-        <template v-if="!isLoggedIn">
+        <!-- Conditional rendering of Login/Logout button -->
+        <template v-if="isLoggedIn">
+          <button @click="logout">Logout</button>
+        </template>
+        <template v-else>
           <NuxtLink to="/login">
             <button>Login</button>
           </NuxtLink>
-        </template>
-        <template v-else>
-          <button @click="logout">Logout</button>
         </template>
         <NuxtLink to="/checkout">
           <button>My Cart</button>
@@ -41,28 +47,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from "vue";
 
 const menuActive = ref(false);
-const isLoggedIn = ref(false); // Track if the user is logged in
-const router = useRouter();
+const isLoggedIn = ref(false); // State to track whether the user is logged in
 
 const toggleMenu = () => {
   menuActive.value = !menuActive.value;
 };
 
-// Logout function to remove the token and redirect
-const logout = () => {
-  localStorage.removeItem('token'); // Remove the token from localStorage
-  isLoggedIn.value = false; // Update the logged-in state
-  router.push('/login'); // Redirect to login page
+// Check if the user is logged in by checking for a token in localStorage
+const checkLoginStatus = () => {
+  const token = localStorage.getItem("token");
+  isLoggedIn.value = !!token; // Set isLoggedIn to true if token exists
 };
 
-// Check if the user is logged in by checking if the token exists
+// Function to handle logout
+const logout = () => {
+  localStorage.removeItem("token"); // Remove the token
+  isLoggedIn.value = false; // Set logged-in state to false
+  window.location.href = "/"; // Redirect to home page
+};
+
+// Check login status when the component is mounted
 onMounted(() => {
-  const token = localStorage.getItem('token');
-  isLoggedIn.value = !!token; // Set isLoggedIn to true if the token exists
+  checkLoginStatus();
 });
 </script>
 
@@ -73,24 +82,29 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   background-color: #333;
-  padding: 1rem 2rem; /* Add padding for more space */
+  padding: 1rem 2rem;
   color: white;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
-/* Align the logo and menu items to the left */
 .navbar-left {
   display: flex;
   align-items: center;
+}
+
+/* Remove default link styles from NuxtLink */
+.logo-link {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit the current text color */
 }
 
 /* Logo Styles */
 .logo h1 {
   font-size: 26px;
   margin-right: 2rem;
-  color: #4CAF50; /* Match the button color for brand consistency */
+  color: #4caf50; /* Logo color */
   font-weight: bold;
   transition: color 0.3s ease;
 }
@@ -99,7 +113,6 @@ onMounted(() => {
   color: #45a049;
 }
 
-/* Align the nav links to the left within the navbar-left section */
 .nav-links {
   list-style: none;
   display: flex;
@@ -118,10 +131,9 @@ onMounted(() => {
 }
 
 .nav-links a:hover {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
-/* Hamburger menu button (hidden by default, shown on small screens) */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -138,17 +150,16 @@ onMounted(() => {
   transition: transform 0.3s ease;
 }
 
-/* Buttons for Login and My Cart */
 .nav-buttons {
   display: flex;
-  gap: 1.5rem; /* Add more space between the buttons */
+  gap: 1.5rem;
 }
 
 .nav-buttons button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
-  padding: 0.5rem 1.25rem; /* Adjust padding for a balanced look */
+  padding: 0.5rem 1.25rem;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
@@ -158,14 +169,8 @@ onMounted(() => {
 
 .nav-buttons button:hover {
   background-color: #45a049;
-  transform: scale(1.05); /* Slight scale effect on hover */
 }
 
-.nav-buttons button:focus {
-  outline: none;
-}
-
-/* Responsive behavior: For screens smaller than 768px */
 @media (max-width: 768px) {
   .nav-links {
     position: absolute;
@@ -193,14 +198,13 @@ onMounted(() => {
   }
 }
 
-/* Additional styling for hover effect on hamburger */
 .hamburger:hover .bar {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 @media (max-width: 1024px) {
   .navbar {
-    padding: 1rem; /* Reduce padding on smaller screens */
+    padding: 1rem;
   }
 }
 </style>
