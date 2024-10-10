@@ -192,6 +192,9 @@ npm run build
 npm run start
 ```
 
+##Preview
+![App Preview](public/app-preview.gif)
+
 ## Contributing
 
 1. **Fork the repository**
