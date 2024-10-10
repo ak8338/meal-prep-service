@@ -192,7 +192,8 @@ npm run build
 npm run start
 ```
 
-##Preview
+## Preview
+
 ![App Preview](public/app-preview.gif)
 
 ## Contributing
