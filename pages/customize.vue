@@ -38,7 +38,7 @@
 
       <!-- Total section (Price and Calories) -->
       <div class="total-section">
-        <h2>Total Price: <span>{{ totalPrice | currency }}</span></h2>
+        <h2>Total Price: $<span>{{ totalPrice.toFixed(2) }}</span></h2>
         <h2>Total Calories: <span>{{ totalCalories }}</span></h2>
       </div>
 

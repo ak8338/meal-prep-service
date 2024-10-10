@@ -7,30 +7,33 @@
 
       <h2 class="section-title">Selected Meals</h2>
 
-      <!-- Check if the cart is empty -->
-      <div v-if="selectedMeals.length > 0" class="meals-container">
-        <div class="meal-card" v-for="meal in selectedMeals" :key="meal.id">
-          <img :src="meal.image" :alt="meal.name" class="meal-image"/>
+      <!-- Check if the meal plan is not empty -->
+      <div v-if="mealPlan.length > 0" class="meals-container">
+        <div class="meal-card" v-for="meal in mealPlan" :key="meal.id">
+          <img :src="meal.imageUrl" :alt="meal.name" class="meal-image" />
           <h3 class="meal-card-title">{{ meal.name }}</h3>
           <p class="meal-card-description">{{ meal.description }}</p>
 
+          <!-- Calories and Price Pills -->
           <div class="meal-info">
-            <div class="meal-pill">Calories: {{ meal.calories }}</div>
-            <div class="meal-pill">Price: {{ meal.price | currency }}</div>
+            <div class="meal-pill">Calories: {{ meal.calories * meal.quantity }}</div>
+            <div class="meal-pill">Price: ${{ (meal.price * meal.quantity).toFixed(2) }}</div>
           </div>
         </div>
       </div>
 
       <!-- Show message if the cart is empty -->
-      <div v-if="selectedMeals.length === 0" class="empty-cart-message">
+      <div v-if="mealPlan.length === 0" class="empty-cart-message">
         <p>Your cart is empty.</p>
       </div>
 
-      <!-- Total section and Place Order button are always visible -->
+      <!-- Total section for price and calories -->
       <div class="total-section">
-        <h2>Total: <span>{{ total | currency }}</span></h2>
+        <h2>Total Price: $<span>{{ totalPrice.toFixed(2) }}</span></h2>
+        <h2>Total Calories: <span>{{ totalCalories }}</span></h2>
       </div>
 
+      <!-- Place Order Button -->
       <button class="place-order-button" @click="placeOrder">Place Order</button>
     </div>
 
@@ -42,23 +45,42 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import Navbar from '~/components/Navbar.vue';
 import Footer from '~/components/Footer.vue';
-import NotificationBanner from '~/components/NotificationBanner.vue'; // Import the reusable component
+import NotificationBanner from '~/components/NotificationBanner.vue';
+import { useMealPlanStore } from '~/stores/mealPlan'; // Pinia store for the meal plan
 
 definePageMeta({
   middleware: 'auth'
 });
 
-const selectedMeals = ref([]); // Add selected meals data if available
+const store = useMealPlanStore(); // Access the Pinia store
 
-const total = computed(() => selectedMeals.value.reduce((sum, meal) => sum + meal.price, 0));
+// Access meal plan data from the store
+const mealPlan = computed(() => store.mealPlan);
 
+// Compute total price for all meals in the meal plan
+const totalPrice = computed(() => {
+  return mealPlan.value.reduce((sum, meal) => sum + meal.price * meal.quantity, 0);
+});
+
+// Compute total calories for all meals in the meal plan
+const totalCalories = computed(() => {
+  return mealPlan.value.reduce((sum, meal) => sum + meal.calories * meal.quantity, 0);
+});
+
+// Notification for order placement
 const showNotification = ref(false);
 
 const placeOrder = () => {
+  if (mealPlan.value.length === 0) return;
+
+  // Show notification
   showNotification.value = true;
+
+  // Clear the meal plan in the store after placing the order
+  store.clearMealPlan();
 
   // Automatically hide the notification after 3 seconds
   setTimeout(() => {
@@ -66,11 +88,6 @@ const placeOrder = () => {
   }, 3000);
 };
 </script>
-
-<style scoped>
-/* Your existing styles */
-</style>
-
 
 <style scoped>
 /* Base Styles */

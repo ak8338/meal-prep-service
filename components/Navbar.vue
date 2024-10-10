@@ -8,16 +8,19 @@
             <h1>WholesomeEats</h1>
           </div>
         </NuxtLink>
-        <ul :class="{ 'nav-links': true, 'active': menuActive }">
+        <ul :class="{ 'nav-links': true, active: menuActive }">
           <li>
             <NuxtLink to="/">Home</NuxtLink>
           </li>
+
           <li>
             <NuxtLink to="/about">About Us</NuxtLink>
           </li>
-          <li>
-            <NuxtLink to="/customize">My Meal Plan</NuxtLink>
-          </li>
+          <template v-if="isLoggedIn">
+            <li>
+              <NuxtLink to="/customize">My Meal Plan</NuxtLink>
+            </li>
+          </template>
         </ul>
       </div>
       <div class="nav-buttons">
@@ -44,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 const menuActive = ref(false);
 const isLoggedIn = ref(false); // State to track whether the user is logged in
@@ -55,15 +58,15 @@ const toggleMenu = () => {
 
 // Check if the user is logged in by checking for a token in localStorage
 const checkLoginStatus = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   isLoggedIn.value = !!token; // Set isLoggedIn to true if token exists
 };
 
 // Function to handle logout
 const logout = () => {
-  localStorage.removeItem('token'); // Remove the token
+  localStorage.removeItem("token"); // Remove the token
   isLoggedIn.value = false; // Set logged-in state to false
-  window.location.href = '/'; // Redirect to home page
+  window.location.href = "/"; // Redirect to home page
 };
 
 // Check login status when the component is mounted
