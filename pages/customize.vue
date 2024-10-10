@@ -6,25 +6,40 @@
 
       <h2 class="section-title">Your Meal Plan</h2>
 
+      <!-- Display meals in the meal plan -->
       <div v-if="mealPlan.length > 0" class="meals-container">
         <div class="meal-card" v-for="meal in mealPlan" :key="meal.id">
-          <img :src="meal.imageUrl" :alt="meal.name" class="meal-image" />
+          <img :src="meal.imageUrl" :alt="meal.name" class="meal-image"/>
           <h3 class="meal-card-title">{{ meal.name }}</h3>
           <p class="meal-card-description">{{ meal.description }}</p>
 
+          <!-- Calories and Price Pills -->
           <div class="meal-info">
             <div class="meal-pill">Calories: {{ meal.calories }}</div>
             <div class="meal-pill">Price: {{ meal.price | currency }}</div>
           </div>
+
+          <!-- Quantity controls -->
+          <div class="quantity-controls">
+            <button @click="decreaseQuantity(meal.id)">-</button>
+            <span>{{ meal.quantity }}</span> <!-- Display the meal quantity -->
+            <button @click="increaseQuantity(meal.id)">+</button>
+          </div>
+
+          <!-- Remove meal button -->
+          <button @click="removeMealFromPlan(meal.id)" class="remove-button">Remove</button>
         </div>
       </div>
 
-      <div v-if="mealPlan.length === 0" class="no-meals-message">
-        <p>Meal Plan is Empty</p>
+      <!-- Show message if the meal plan is empty -->
+      <div v-if="mealPlan.length === 0" class="empty-plan-message">
+        <p>Your meal plan is empty.</p>
       </div>
 
+      <!-- Total section (Price and Calories) -->
       <div class="total-section">
-        <h2>Total: $<span>{{ total | currency }}</span></h2>
+        <h2>Total Price: <span>{{ totalPrice | currency }}</span></h2>
+        <h2>Total Calories: <span>{{ totalCalories }}</span></h2>
       </div>
 
       <nuxt-link to="/checkout" class="checkout-link">Go to Checkout</nuxt-link>
@@ -36,7 +51,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useMealPlanStore } from '~/stores/mealPlan';
+import { useMealPlanStore } from '~/stores/mealPlan'; // Pinia store for the meal plan
 import Navbar from '~/components/Navbar.vue';
 import Footer from '~/components/Footer.vue';
 
@@ -44,15 +59,39 @@ definePageMeta({
   middleware: 'auth'
 });
 
-const store = useMealPlanStore(); // Access the Pinia store
-const mealPlan = computed(() => store.mealPlan); // Access mealPlan from the store
+const store = useMealPlanStore(); // Pinia store for managing meal plans
 
-const total = computed(() => store.totalPrice); // Use the totalPrice getter from the store
+// Access meal plan from the store
+const mealPlan = computed(() => store.mealPlan);
+
+// Remove a meal from the meal plan
+const removeMealFromPlan = (mealId) => {
+  store.removeMealFromPlan(mealId);
+};
+
+// Increase meal quantity
+const increaseQuantity = (mealId) => {
+  store.increaseMealQuantity(mealId);
+};
+
+// Decrease meal quantity
+const decreaseQuantity = (mealId) => {
+  store.decreaseMealQuantity(mealId);
+};
+
+// Calculate total price
+const totalPrice = computed(() => {
+  return mealPlan.value.reduce((sum, meal) => sum + (meal.price * (meal.quantity || 1)), 0);
+});
+
+// Calculate total calories
+const totalCalories = computed(() => {
+  return mealPlan.value.reduce((sum, meal) => sum + (meal.calories * (meal.quantity || 1)), 0);
+});
 </script>
 
 
 <style scoped>
-/* Base Styles */
 .customize-page {
   font-family: 'Roboto', sans-serif;
   background-color: #f9f9f9;
@@ -66,8 +105,6 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -95,7 +132,6 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   font-size: 1.5rem;
   margin-bottom: 15px;
   color: #4a5568;
-  animation: fadeIn 0.7s ease-in-out;
 }
 
 /* Meal Card */
@@ -104,7 +140,6 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   flex-direction: column;
   gap: 15px;
   margin-bottom: 20px;
-  width: 100%;
 }
 
 .meal-card {
@@ -125,16 +160,6 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
     opacity: 1;
     transform: scale(1);
   }
-}
-
-/* No Meals Message */
-.no-meals-message {
-  text-align: center;
-  padding: 30px;
-  font-size: 1.2rem;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  color: #6b6b6b;
 }
 
 /* Image */
@@ -162,10 +187,43 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   font-size: 14px;
 }
 
-/* Checkbox */
-.meal-checkbox {
-  margin-top: 10px;
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.quantity-controls button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
   cursor: pointer;
+  font-size: 16px;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+}
+
+.quantity-controls button:hover {
+  background-color: #45a049;
+}
+
+/* Remove Button */
+.remove-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.remove-button:hover {
+  background-color: #d32f2f;
 }
 
 /* Total Section */
@@ -175,7 +233,6 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   font-size: 1.5rem;
   font-weight: bold;
   color: #2d3748;
-  width: 100%;
 }
 
 /* Checkout Link */
@@ -196,53 +253,13 @@ const total = computed(() => store.totalPrice); // Use the totalPrice getter fro
   transform: scale(1.05);
 }
 
-/* Footer Styles */
-.footer {
-  background-color: #333;
-  color: white;
+/* Empty Plan Message */
+.empty-plan-message {
   text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-}
-
-.footer ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  padding-left: 0;
-}
-
-.footer a {
-  color: white;
-  text-decoration: none;
-}
-
-.footer p {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-/* Responsive Styles */
-@media (max-width: 1024px) {
-  .customize-container {
-    padding: 20px;
-  }
-
-  .customize-title {
-    font-size: 2rem;
-  }
-
-  .section-title {
-    font-size: 1.3rem;
-  }
-
-  .total-section {
-    font-size: 1.3rem;
-  }
-
-  .checkout-link {
-    font-size: 1.1rem;
-  }
+  padding: 30px;
+  font-size: 1.2rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  color: #6b6b6b;
 }
 </style>

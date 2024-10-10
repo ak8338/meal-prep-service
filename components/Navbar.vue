@@ -21,9 +21,15 @@
         </ul>
       </div>
       <div class="nav-buttons">
-        <NuxtLink to="/login">
-          <button>Login</button>
-        </NuxtLink>
+        <!-- Conditional rendering of Login/Logout button -->
+        <template v-if="isLoggedIn">
+          <button @click="logout">Logout</button>
+        </template>
+        <template v-else>
+          <NuxtLink to="/login">
+            <button>Login</button>
+          </NuxtLink>
+        </template>
         <NuxtLink to="/checkout">
           <button>My Cart</button>
         </NuxtLink>
@@ -38,13 +44,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const menuActive = ref(false);
+const isLoggedIn = ref(false); // State to track whether the user is logged in
 
 const toggleMenu = () => {
   menuActive.value = !menuActive.value;
 };
+
+// Check if the user is logged in by checking for a token in localStorage
+const checkLoginStatus = () => {
+  const token = localStorage.getItem('token');
+  isLoggedIn.value = !!token; // Set isLoggedIn to true if token exists
+};
+
+// Function to handle logout
+const logout = () => {
+  localStorage.removeItem('token'); // Remove the token
+  isLoggedIn.value = false; // Set logged-in state to false
+  window.location.href = '/'; // Redirect to home page
+};
+
+// Check login status when the component is mounted
+onMounted(() => {
+  checkLoginStatus();
+});
 </script>
 
 <style scoped>
