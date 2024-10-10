@@ -2,7 +2,7 @@
 
 # Meal Prep Service
 
-This project is a Nuxt3 application that allows users to organize meal plans, add them to a cart, and checkout. It integrates a NoSQL database via Prisma to manage user data, meal plans, and orders. The app features user authentication, customizable meal options, and secure checkout.
+This project is a Nuxt3 application that allows users to organize meal plans, add them to a cart, and checkout. It integrates a SQLite database via Prisma to manage user data, meal plans, and orders. The app features user authentication, customizable meal options, and secure checkout.
 
 ## Table of Contents
 
@@ -38,11 +38,11 @@ This project is a Nuxt3 application that allows users to organize meal plans, ad
    DATABASE_URL="file:./dev.db"
    ```
 
-   This will set up your database as a local file-based NoSQL solution.
+   This will set up your database as a local file-based SQLite solution.
 
 4. **Nuxt Configuration:**
 
-   Update `nuxt.config.ts` if needed, ensuring that Prisma is correctly configured for a NoSQL environment.
+   Update `nuxt.config.ts` if needed, ensuring that Prisma is correctly configured for a SQLite environment.
 
    ```ts
    import { defineNuxtConfig } from 'nuxt3'
@@ -59,7 +59,7 @@ This project is a Nuxt3 application that allows users to organize meal plans, ad
 
 ## Prisma Database Setup
 
-Prisma is used to manage the NoSQL database for this application. Follow these steps to set up Prisma.
+Prisma is used to manage the SQLite database for this application. Follow these steps to set up Prisma.
 
 1. **Install Prisma and its dependencies:**
 
@@ -82,7 +82,7 @@ Prisma is used to manage the NoSQL database for this application. Follow these s
 
 3. **Define your database schema:**
 
-   Edit the `prisma/schema.prisma` file to define your models (e.g., `User`, `Meal`, `Order`). Here is an example schema for your NoSQL setup:
+   Edit the `prisma/schema.prisma` file to define your models (e.g., `User`, `Meal`, `Order`). Here is an example schema for your SQLite setup:
 
    ```prisma
    datasource db {
@@ -149,7 +149,7 @@ Prisma is used to manage the NoSQL database for this application. Follow these s
 
 5. **Migrate your database:**
 
-   Apply the schema to your NoSQL database by running the following migration command:
+   Apply the schema to your SQLite database by running the following migration command:
 
    ```bash
    npx prisma migrate dev --name init
@@ -159,7 +159,7 @@ Prisma is used to manage the NoSQL database for this application. Follow these s
 
 6. **Using Prisma in Nuxt3:**
 
-   Now, you can use Prisma in your Nuxt3 application to interact with the NoSQL database. For example, retrieving users from the database:
+   Now, you can use Prisma in your Nuxt3 application to interact with the SQLite database. For example, retrieving users from the database:
 
    ```ts
    import { PrismaClient } from '@prisma/client'
